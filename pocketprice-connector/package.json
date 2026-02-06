@@ -1,0 +1,16 @@
+{
+	"name": "pocketprice-connector",
+	"version": "1.0.0",
+	"description": "Pocket Price Connector — WordPress plugin for displaying services from Pocket Price API.",
+	"private": true,
+	"scripts": {
+		"build": "wp-scripts build",
+		"start": "wp-scripts start",
+		"lint:js": "wp-scripts lint-js src/",
+		"format": "wp-scripts format src/"
+	},
+	"devDependencies": {
+		"@wordpress/scripts": "^30.0.0",
+		"copy-webpack-plugin": "^12.0.0"
+	}
+}

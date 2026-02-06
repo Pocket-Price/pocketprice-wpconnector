@@ -1,0 +1,12 @@
+/* Front-end styles for Service Collection block */
+.pocketprice-collection {
+	margin: 1.5rem 0;
+}
+
+.pocketprice-collection .pocketprice-services-table {
+	margin-bottom: 2rem;
+}
+
+.pocketprice-collection .pocketprice-services-table:last-child {
+	margin-bottom: 0;
+}

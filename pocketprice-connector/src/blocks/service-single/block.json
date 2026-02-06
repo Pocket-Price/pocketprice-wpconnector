@@ -1,0 +1,26 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pocketprice/service-single",
+	"version": "1.0.0",
+	"title": "Pocket Price: Service",
+	"category": "widgets",
+	"icon": "tag",
+	"description": "Display a single service from Pocket Price.",
+	"keywords": [ "price", "service", "pocket" ],
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	},
+	"textdomain": "pocketprice-connector",
+	"attributes": {
+		"serviceId": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

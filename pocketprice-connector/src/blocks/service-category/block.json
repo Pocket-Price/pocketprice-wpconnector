@@ -1,0 +1,34 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pocketprice/service-category",
+	"version": "1.0.0",
+	"title": "Pocket Price: Category",
+	"category": "widgets",
+	"icon": "category",
+	"description": "Display services from a specific category as a price table.",
+	"keywords": [ "price", "category", "pocket", "table" ],
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	},
+	"textdomain": "pocketprice-connector",
+	"attributes": {
+		"categoryId": {
+			"type": "string",
+			"default": ""
+		},
+		"showDescription": {
+			"type": "boolean",
+			"default": false
+		},
+		"showDuration": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

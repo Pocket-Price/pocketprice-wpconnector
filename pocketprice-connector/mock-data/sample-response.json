@@ -1,0 +1,118 @@
+{
+	"services": [
+		{
+			"id": "svc_001",
+			"name": "Стрижка мужская",
+			"description": "Классическая мужская стрижка",
+			"price": 1500,
+			"price_max": null,
+			"currency": "RUB",
+			"duration": 30,
+			"category_id": "cat_hair",
+			"image_url": null,
+			"sort_order": 1,
+			"is_active": true
+		},
+		{
+			"id": "svc_002",
+			"name": "Стрижка женская",
+			"description": "Женская стрижка любой сложности",
+			"price": 2000,
+			"price_max": 4000,
+			"currency": "RUB",
+			"duration": 60,
+			"category_id": "cat_hair",
+			"image_url": null,
+			"sort_order": 2,
+			"is_active": true
+		},
+		{
+			"id": "svc_003",
+			"name": "Окрашивание волос",
+			"description": "Профессиональное окрашивание",
+			"price": 3500,
+			"price_max": 8000,
+			"currency": "RUB",
+			"duration": 120,
+			"category_id": "cat_hair",
+			"image_url": null,
+			"sort_order": 3,
+			"is_active": true
+		},
+		{
+			"id": "svc_004",
+			"name": "Маникюр классический",
+			"description": "Классический маникюр с покрытием",
+			"price": 1200,
+			"price_max": null,
+			"currency": "RUB",
+			"duration": 45,
+			"category_id": "cat_nails",
+			"image_url": null,
+			"sort_order": 1,
+			"is_active": true
+		},
+		{
+			"id": "svc_005",
+			"name": "Педикюр",
+			"description": "Аппаратный педикюр",
+			"price": 2000,
+			"price_max": null,
+			"currency": "RUB",
+			"duration": 60,
+			"category_id": "cat_nails",
+			"image_url": null,
+			"sort_order": 2,
+			"is_active": true
+		},
+		{
+			"id": "svc_006",
+			"name": "Массаж спины",
+			"description": "Расслабляющий массаж спины",
+			"price": 2500,
+			"price_max": null,
+			"currency": "RUB",
+			"duration": 40,
+			"category_id": "cat_body",
+			"image_url": null,
+			"sort_order": 1,
+			"is_active": true
+		},
+		{
+			"id": "svc_007",
+			"name": "Массаж всего тела",
+			"description": "Полный расслабляющий массаж",
+			"price": 4000,
+			"price_max": 5000,
+			"currency": "RUB",
+			"duration": 90,
+			"category_id": "cat_body",
+			"image_url": null,
+			"sort_order": 2,
+			"is_active": true
+		}
+	],
+	"categories": [
+		{
+			"id": "cat_hair",
+			"name": "Парикмахерские услуги",
+			"slug": "hairdressing",
+			"sort_order": 1,
+			"parent_id": null
+		},
+		{
+			"id": "cat_nails",
+			"name": "Ногтевой сервис",
+			"slug": "nails",
+			"sort_order": 2,
+			"parent_id": null
+		},
+		{
+			"id": "cat_body",
+			"name": "Массаж и SPA",
+			"slug": "body-spa",
+			"sort_order": 3,
+			"parent_id": null
+		}
+	]
+}

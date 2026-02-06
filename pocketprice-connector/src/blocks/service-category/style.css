@@ -1,0 +1,68 @@
+/* Front-end styles for Service Category table block */
+.pocketprice-services-table {
+	margin: 1.5rem 0;
+}
+
+.pocketprice-services-table__title {
+	margin: 0 0 0.75rem;
+	font-size: 1.2rem;
+	font-weight: 600;
+}
+
+.pocketprice-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.95rem;
+}
+
+.pocketprice-table thead th {
+	text-align: left;
+	padding: 0.6rem 0.75rem;
+	border-bottom: 2px solid #e0e0e0;
+	font-weight: 600;
+	font-size: 0.85rem;
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+	color: #666;
+}
+
+.pocketprice-table tbody tr {
+	border-bottom: 1px solid #f0f0f0;
+}
+
+.pocketprice-table tbody tr:last-child {
+	border-bottom: none;
+}
+
+.pocketprice-table tbody td {
+	padding: 0.6rem 0.75rem;
+	vertical-align: middle;
+}
+
+.pocketprice-table__name {
+	font-weight: 500;
+}
+
+.pocketprice-table__price {
+	font-weight: 700;
+	white-space: nowrap;
+}
+
+.pocketprice-table__duration {
+	color: #888;
+	white-space: nowrap;
+}
+
+.pocketprice-table__desc {
+	color: #555;
+	font-size: 0.9rem;
+}
+
+.pocketprice-notice {
+	padding: 1rem;
+	background: #f9f9f9;
+	border: 1px dashed #ccc;
+	border-radius: 4px;
+	color: #666;
+	text-align: center;
+}
