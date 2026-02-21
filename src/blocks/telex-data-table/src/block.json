@@ -1,0 +1,64 @@
+
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "telex/block-telex-data-table",
+	"version": "0.1.0",
+	"title": "Interactive Data Table",
+	"category": "widgets",
+	"icon": "list-view",
+	"description": "Display interactive data tables with search, filtering, sorting, and pagination from REST APIs or JSON sources.",
+	"example": {},
+	"attributes": {
+		"dataSourceUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"rowsPerPage": {
+			"type": "number",
+			"default": 10
+		},
+		"showSearch": {
+			"type": "boolean",
+			"default": true
+		},
+		"showColumnFilters": {
+			"type": "boolean",
+			"default": true
+		},
+		"showPagination": {
+			"type": "boolean",
+			"default": true
+		},
+		"enableSorting": {
+			"type": "boolean",
+			"default": true
+		},
+		"showBorders": {
+			"type": "boolean",
+			"default": true
+		},
+		"alternatingRows": {
+			"type": "boolean",
+			"default": true
+		},
+		"responsiveMode": {
+			"type": "string",
+			"default": "scroll"
+		},
+		"selectedColumns": {
+			"type": "array",
+			"default": []
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": ["wide", "full"]
+	},
+	"textdomain": "telex-data-table",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}

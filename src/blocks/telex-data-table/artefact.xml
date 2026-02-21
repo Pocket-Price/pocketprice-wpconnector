@@ -1,0 +1,1546 @@
+<artefact xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="artefact.xsd" name="Interactive Data Table Block" slug="telex-data-table" type="code-package" schemaVersion="2">
+  <file path="readme.txt">
+    <description>This file contains the readme information for the block. It is used to provide information about the block, its usage, and any other relevant details.</description>
+    <content><![CDATA[
+=== Interactive Data Table Block ===
+
+Contributors:      WordPress Telex
+Tags:              block, table, data, interactive, datatable
+Tested up to:      6.8
+Stable tag:        0.1.0
+License:           GPLv2 or later
+License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+
+A powerful interactive data table block with search, filtering, sorting, and pagination capabilities.
+
+== Description ==
+
+The Interactive Data Table Block brings advanced data table functionality to WordPress. Display data from REST APIs or JSON sources with a rich set of interactive features.
+
+**Key Features:**
+
+* **Flexible Data Sources**: Connect to REST APIs or load JSON data
+* **Real-time Search**: Filter table data as you type
+* **Column Filtering**: Add dropdown filters for individual columns
+* **Sortable Columns**: Click column headers to sort data
+* **Pagination**: Control rows per page with customizable pagination
+* **Loading States**: Professional loading indicators while fetching data
+* **Error Handling**: Graceful error messages for failed requests
+* **Responsive Design**: Mobile-friendly tables that adapt to screen sizes
+* **Customizable Styling**: Control borders, row colors, and appearance
+* **Editor Controls**: Comprehensive settings in the block inspector
+
+**Perfect For:**
+
+* Product catalogs
+* Team directories
+* Data dashboards
+* API documentation
+* Statistical reports
+* Any tabular data display
+
+== Installation ==
+
+1. Upload the plugin files to the `/wp-content/plugins/telex-data-table` directory, or install the plugin through the WordPress plugins screen directly.
+2. Activate the plugin through the 'Plugins' screen in WordPress
+3. Add the "Interactive Data Table" block to any post or page
+4. Configure your data source URL and table settings in the block inspector
+5. Customize the appearance and behavior to match your needs
+
+== Frequently Asked Questions ==
+
+= What data formats are supported? =
+
+The block supports JSON data from REST APIs or direct JSON endpoints. The data should be an array of objects where each object represents a table row.
+
+= Can I filter data by multiple columns? =
+
+Yes! Enable column filters in the block settings, and users can filter by any column using the dropdown menus at the top of each column.
+
+= Is the table responsive on mobile devices? =
+
+Absolutely. The table includes responsive behavior options that make it mobile-friendly, with horizontal scrolling when needed.
+
+= Can I customize the table appearance? =
+
+Yes, you can control borders, alternating row colors, pagination settings, and more through the block inspector controls.
+
+= How does search work? =
+
+The search functionality filters rows in real-time as users type, searching across all visible columns for matching text.
+
+== Screenshots ==
+
+1. Interactive data table on the frontend with search and filters
+2. Block editor controls for configuring data source and appearance
+3. Column filter dropdowns in action
+4. Responsive table view on mobile devices
+5. Loading state while fetching data
+
+== Changelog ==
+
+= 0.1.0 =
+* Initial release
+* Real-time search functionality
+* Column-based filtering
+* Sortable columns
+* Pagination support
+* REST API and JSON data source support
+* Customizable styling options
+* Responsive design
+* Loading and error states
+
+== Usage ==
+
+1. **Add the Block**: Insert the "Interactive Data Table" block into your post or page
+2. **Set Data Source**: Enter your REST API or JSON endpoint URL in the block settings
+3. **Configure Columns**: Select which columns to display and enable filtering if needed
+4. **Customize Appearance**: Adjust pagination, styling, and responsive behavior
+5. **Publish**: Save your changes and view the interactive table on your site
+
+**Example Data Format:**
+
+```json
+[
+  {
+    "name": "John Doe",
+    "email": "john@example.com",
+    "department": "Engineering",
+    "status": "Active"
+  },
+  {
+    "name": "Jane Smith",
+    "email": "jane@example.com",
+    "department": "Marketing",
+    "status": "Active"
+  }
+]
+```
+
+The block will automatically detect columns from your data structure.
+]]></content></file>
+  <file path="telex-data-table.php">
+    <description>This file contains the block registration code in the form of a single block plugin. Any other plugin related functionality should be added to this file. All block rendering functionality should go to the `render.php` file.</description>
+    <content><![CDATA[<?php
+/**
+ * Plugin Name:       Interactive Data Table Block
+ * Description:       A powerful interactive data table block with search, filtering, sorting, and pagination capabilities for displaying data from REST APIs or JSON sources.
+ * Version:           0.1.0
+ * Requires at least: 6.1
+ * Requires PHP:      7.4
+ * Author:            WordPress Telex
+ * License:           GPLv2 or later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:       telex-data-table
+ *
+ * @package TelexDataTable
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Registers the block using the metadata loaded from the `block.json` file.
+ * Behind the scenes, it registers also all assets so they can be enqueued
+ * through the block editor in the corresponding context.
+ *
+ * @see https://developer.wordpress.org/reference/functions/register_block_type/
+ */
+function telex_data_table_block_init() {
+	register_block_type( __DIR__ . '/build/' );
+}
+add_action( 'init', 'telex_data_table_block_init' );
+]]></content>
+  </file>
+  <file path="src/block.json">
+    <description>This file contains metadata about the block including its name, title, category, icon, and other properties.</description>
+  <content><![CDATA[
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "telex/block-telex-data-table",
+	"version": "0.1.0",
+	"title": "Interactive Data Table",
+	"category": "widgets",
+	"icon": "list-view",
+	"description": "Display interactive data tables with search, filtering, sorting, and pagination from REST APIs or JSON sources.",
+	"example": {},
+	"attributes": {
+		"dataSourceUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"rowsPerPage": {
+			"type": "number",
+			"default": 10
+		},
+		"showSearch": {
+			"type": "boolean",
+			"default": true
+		},
+		"showColumnFilters": {
+			"type": "boolean",
+			"default": true
+		},
+		"showPagination": {
+			"type": "boolean",
+			"default": true
+		},
+		"enableSorting": {
+			"type": "boolean",
+			"default": true
+		},
+		"showBorders": {
+			"type": "boolean",
+			"default": true
+		},
+		"alternatingRows": {
+			"type": "boolean",
+			"default": true
+		},
+		"responsiveMode": {
+			"type": "string",
+			"default": "scroll"
+		},
+		"selectedColumns": {
+			"type": "array",
+			"default": []
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": ["wide", "full"]
+	},
+	"textdomain": "telex-data-table",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}
+]]></content>
+  </file>
+  <file path="src/index.js">
+    <description>This file registers the block, specifies the edit and save functions, and loads the block's metadata</description>
+	<content><![CDATA[
+/**
+ * Registers a new block provided a unique name and an object defining its behavior.
+ *
+ * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
+ */
+import { registerBlockType } from '@wordpress/blocks';
+
+/**
+ * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
+ * All files containing `style` keyword are bundled together. The code used
+ * gets applied both to the front of your site and to the editor.
+ *
+ * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
+ */
+import './style.scss';
+
+/**
+ * Internal dependencies
+ */
+import Edit from './edit';
+import metadata from './block.json';
+
+/**
+ * Every block starts by registering a new block type definition.
+ *
+ * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
+ */
+registerBlockType( metadata.name, {
+	/**
+	 * @see ./edit.js
+	 */
+	edit: Edit,
+} );
+]]></content>
+  </file>
+  <file path="src/edit.js">
+    <description>This file contains the edit function for the block which is responsible for rendering the block in the editor.</description>
+	<content><![CDATA[
+/**
+ * Retrieves the translation of text.
+ *
+ * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
+ */
+import { __ } from '@wordpress/i18n';
+
+/**
+ * React hook that is used to mark the block wrapper element.
+ * It provides all the necessary props like the class name.
+ *
+ * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
+ */
+import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import { 
+	PanelBody, 
+	TextControl, 
+	ToggleControl, 
+	RangeControl,
+	SelectControl,
+	CheckboxControl,
+	Spinner,
+	Placeholder,
+	Button
+} from '@wordpress/components';
+import { useState, useEffect } from '@wordpress/element';
+import { database } from '@wordpress/icons';
+
+/**
+ * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
+ * Those files can contain any CSS code that gets applied to the editor.
+ *
+ * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
+ */
+import './editor.scss';
+
+/**
+ * The edit function describes the structure of your block in the context of the
+ * editor. This represents what the editor will render when the block is used.
+ *
+ * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
+ *
+ * @return {Element} Element to render.
+ */
+export default function Edit( { attributes, setAttributes } ) {
+	const {
+		dataSourceUrl,
+		rowsPerPage,
+		showSearch,
+		showColumnFilters,
+		showPagination,
+		enableSorting,
+		showBorders,
+		alternatingRows,
+		responsiveMode,
+		selectedColumns
+	} = attributes;
+
+	const [ previewData, setPreviewData ] = useState( null );
+	const [ isLoading, setIsLoading ] = useState( false );
+	const [ error, setError ] = useState( null );
+	const [ availableColumns, setAvailableColumns ] = useState( [] );
+
+	useEffect( () => {
+		if ( dataSourceUrl ) {
+			fetchPreviewData();
+		}
+	}, [ dataSourceUrl ] );
+
+	const fetchPreviewData = async () => {
+		setIsLoading( true );
+		setError( null );
+		
+		try {
+			const response = await fetch( dataSourceUrl );
+			if ( ! response.ok ) {
+				throw new Error( __( 'Failed to fetch data', 'telex-data-table' ) );
+			}
+			
+			const data = await response.json();
+			
+			if ( ! Array.isArray( data ) || data.length === 0 ) {
+				throw new Error( __( 'Invalid data format. Expected an array of objects.', 'telex-data-table' ) );
+			}
+			
+			// Extract columns from first data item
+			const columns = Object.keys( data[ 0 ] );
+			setAvailableColumns( columns );
+			
+			// Set default selected columns if none selected
+			if ( selectedColumns.length === 0 ) {
+				setAttributes( { selectedColumns: columns } );
+			}
+			
+			// Show only first 5 rows for preview
+			setPreviewData( data.slice( 0, 5 ) );
+		} catch ( err ) {
+			setError( err.message );
+			setPreviewData( null );
+		} finally {
+			setIsLoading( false );
+		}
+	};
+
+	const blockProps = useBlockProps( {
+		className: 'telex-data-table-editor'
+	} );
+
+	const renderPreviewTable = () => {
+		if ( ! previewData ) {
+			return null;
+		}
+
+		const columnsToShow = selectedColumns.length > 0 ? selectedColumns : availableColumns;
+
+		return (
+			<div className="telex-data-table-preview">
+				<div className="preview-notice">
+					{ __( 'Preview (showing first 5 rows)', 'telex-data-table' ) }
+				</div>
+				{ showSearch && (
+					<div className="table-search-preview">
+						<input 
+							type="text" 
+							placeholder={ __( 'Search table...', 'telex-data-table' ) }
+							disabled
+						/>
+					</div>
+				) }
+				<div className="table-wrapper">
+					<table className={ `data-table ${ showBorders ? 'with-borders' : '' } ${ alternatingRows ? 'alternating-rows' : '' }` }>
+						<thead>
+							<tr>
+								{ columnsToShow.map( ( column ) => (
+									<th key={ column }>
+										{ column }
+										{ enableSorting && <span className="sort-indicator">⇅</span> }
+									</th>
+								) ) }
+							</tr>
+							{ showColumnFilters && (
+								<tr className="filter-row">
+									{ columnsToShow.map( ( column ) => (
+										<th key={ `filter-${ column }` }>
+											<select disabled>
+												<option>{ __( 'All', 'telex-data-table' ) }</option>
+											</select>
+										</th>
+									) ) }
+								</tr>
+							) }
+						</thead>
+						<tbody>
+							{ previewData.map( ( row, index ) => (
+								<tr key={ index }>
+									{ columnsToShow.map( ( column ) => (
+										<td key={ column }>{ row[ column ] || '-' }</td>
+									) ) }
+								</tr>
+							) ) }
+						</tbody>
+					</table>
+				</div>
+				{ showPagination && (
+					<div className="table-pagination-preview">
+						<span>{ __( 'Showing 1 to 5 of X entries', 'telex-data-table' ) }</span>
+						<div className="pagination-controls">
+							<button disabled>{ __( 'Previous', 'telex-data-table' ) }</button>
+							<span>1</span>
+							<button disabled>{ __( 'Next', 'telex-data-table' ) }</button>
+						</div>
+					</div>
+				) }
+			</div>
+		);
+	};
+
+	return (
+		<>
+			<InspectorControls>
+				<PanelBody title={ __( 'Data Source', 'telex-data-table' ) } initialOpen={ true }>
+					<TextControl
+						label={ __( 'Data Source URL', 'telex-data-table' ) }
+						help={ __( 'Enter REST API or JSON endpoint URL', 'telex-data-table' ) }
+						value={ dataSourceUrl }
+						onChange={ ( value ) => setAttributes( { dataSourceUrl: value } ) }
+						placeholder="https://example.com/api/data"
+					/>
+					{ dataSourceUrl && (
+						<Button
+							variant="secondary"
+							onClick={ fetchPreviewData }
+							disabled={ isLoading }
+						>
+							{ isLoading ? __( 'Loading...', 'telex-data-table' ) : __( 'Refresh Data', 'telex-data-table' ) }
+						</Button>
+					) }
+				</PanelBody>
+
+				{ availableColumns.length > 0 && (
+					<PanelBody title={ __( 'Column Settings', 'telex-data-table' ) } initialOpen={ false }>
+						<p className="components-base-control__help">
+							{ __( 'Select which columns to display', 'telex-data-table' ) }
+						</p>
+						{ availableColumns.map( ( column ) => (
+							<CheckboxControl
+								key={ column }
+								label={ column }
+								checked={ selectedColumns.includes( column ) }
+								onChange={ ( checked ) => {
+									if ( checked ) {
+										setAttributes( { 
+											selectedColumns: [ ...selectedColumns, column ] 
+										} );
+									} else {
+										setAttributes( { 
+											selectedColumns: selectedColumns.filter( col => col !== column ) 
+										} );
+									}
+								} }
+							/>
+						) ) }
+					</PanelBody>
+				) }
+
+				<PanelBody title={ __( 'Table Features', 'telex-data-table' ) } initialOpen={ false }>
+					<ToggleControl
+						label={ __( 'Show Search', 'telex-data-table' ) }
+						help={ __( 'Enable real-time search functionality', 'telex-data-table' ) }
+						checked={ showSearch }
+						onChange={ ( value ) => setAttributes( { showSearch: value } ) }
+					/>
+					<ToggleControl
+						label={ __( 'Show Column Filters', 'telex-data-table' ) }
+						help={ __( 'Add dropdown filters for each column', 'telex-data-table' ) }
+						checked={ showColumnFilters }
+						onChange={ ( value ) => setAttributes( { showColumnFilters: value } ) }
+					/>
+					<ToggleControl
+						label={ __( 'Enable Sorting', 'telex-data-table' ) }
+						help={ __( 'Allow users to sort by clicking column headers', 'telex-data-table' ) }
+						checked={ enableSorting }
+						onChange={ ( value ) => setAttributes( { enableSorting: value } ) }
+					/>
+					<ToggleControl
+						label={ __( 'Show Pagination', 'telex-data-table' ) }
+						help={ __( 'Display pagination controls', 'telex-data-table' ) }
+						checked={ showPagination }
+						onChange={ ( value ) => setAttributes( { showPagination: value } ) }
+					/>
+					{ showPagination && (
+						<RangeControl
+							label={ __( 'Rows Per Page', 'telex-data-table' ) }
+							value={ rowsPerPage }
+							onChange={ ( value ) => setAttributes( { rowsPerPage: value } ) }
+							min={ 5 }
+							max={ 100 }
+							step={ 5 }
+						/>
+					) }
+				</PanelBody>
+
+				<PanelBody title={ __( 'Appearance', 'telex-data-table' ) } initialOpen={ false }>
+					<ToggleControl
+						label={ __( 'Show Borders', 'telex-data-table' ) }
+						checked={ showBorders }
+						onChange={ ( value ) => setAttributes( { showBorders: value } ) }
+					/>
+					<ToggleControl
+						label={ __( 'Alternating Row Colors', 'telex-data-table' ) }
+						checked={ alternatingRows }
+						onChange={ ( value ) => setAttributes( { alternatingRows: value } ) }
+					/>
+					<SelectControl
+						label={ __( 'Responsive Mode', 'telex-data-table' ) }
+						value={ responsiveMode }
+						options={ [
+							{ label: __( 'Horizontal Scroll', 'telex-data-table' ), value: 'scroll' },
+							{ label: __( 'Stack Columns', 'telex-data-table' ), value: 'stack' }
+						] }
+						onChange={ ( value ) => setAttributes( { responsiveMode: value } ) }
+					/>
+				</PanelBody>
+			</InspectorControls>
+
+			<div { ...blockProps }>
+				{ ! dataSourceUrl && (
+					<Placeholder
+						icon={ database }
+						label={ __( 'Interactive Data Table', 'telex-data-table' ) }
+						instructions={ __( 'Configure the data source URL in the block settings to get started.', 'telex-data-table' ) }
+					>
+						<TextControl
+							label={ __( 'Data Source URL', 'telex-data-table' ) }
+							value={ dataSourceUrl }
+							onChange={ ( value ) => setAttributes( { dataSourceUrl: value } ) }
+							placeholder="https://example.com/api/data"
+						/>
+					</Placeholder>
+				) }
+
+				{ dataSourceUrl && isLoading && (
+					<div className="loading-state">
+						<Spinner />
+						<p>{ __( 'Loading data...', 'telex-data-table' ) }</p>
+					</div>
+				) }
+
+				{ dataSourceUrl && error && (
+					<div className="error-state">
+						<p>{ __( 'Error:', 'telex-data-table' ) } { error }</p>
+						<Button
+							variant="secondary"
+							onClick={ fetchPreviewData }
+						>
+							{ __( 'Try Again', 'telex-data-table' ) }
+						</Button>
+					</div>
+				) }
+
+				{ dataSourceUrl && ! isLoading && ! error && previewData && renderPreviewTable() }
+			</div>
+		</>
+	);
+}
+]]></content>
+  </file>
+  <file path="src/save.js">
+    <description>This file contains the save function for the block which is responsible for creating the static result of rendering the block on the client to display the saved result on the front end.</description>
+	<content><![CDATA[
+]]></content>
+  </file>
+  <file path="src/style.scss">
+    <description>This file contains styles for the block in the front end.</description>
+	<content><![CDATA[
+/**
+ * The following styles get applied both on the front of your site
+ * and in the editor.
+ */
+
+.wp-block-telex-block-telex-data-table {
+	margin: 2rem 0;
+
+	.telex-data-table-container {
+		background: #fff;
+		border-radius: 8px;
+		overflow: hidden;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	}
+
+	.table-header {
+		padding: 1.5rem;
+		border-bottom: 1px solid #e0e0e0;
+	}
+
+	.table-search {
+		margin-bottom: 1rem;
+
+		input {
+			width: 100%;
+			padding: 0.75rem 1rem;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			font-size: 1rem;
+			transition: border-color 0.2s;
+
+			&:focus {
+				outline: none;
+				border-color: #2271b1;
+			}
+		}
+	}
+
+	.table-wrapper {
+		overflow-x: auto;
+		
+		&.responsive-scroll {
+			-webkit-overflow-scrolling: touch;
+		}
+	}
+
+	.data-table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.95rem;
+
+		thead {
+			background: #f8f9fa;
+
+			th {
+				padding: 1rem;
+				text-align: left;
+				font-weight: 600;
+				color: #333;
+				white-space: nowrap;
+				user-select: none;
+
+				&.sortable {
+					cursor: pointer;
+					transition: background-color 0.2s;
+
+					&:hover {
+						background: #e9ecef;
+					}
+				}
+
+				.sort-indicator {
+					margin-left: 0.5rem;
+					opacity: 0.4;
+					font-size: 0.9em;
+
+					&.active {
+						opacity: 1;
+						color: #2271b1;
+					}
+				}
+			}
+
+			.filter-row {
+				th {
+					padding: 0.5rem 1rem;
+
+					select {
+						width: 100%;
+						padding: 0.5rem;
+						border: 1px solid #ddd;
+						border-radius: 4px;
+						font-size: 0.9rem;
+						background: white;
+						cursor: pointer;
+
+						&:focus {
+							outline: none;
+							border-color: #2271b1;
+						}
+					}
+				}
+			}
+		}
+
+		tbody {
+			tr {
+				transition: background-color 0.2s;
+
+				&:hover {
+					background: #f8f9fa;
+				}
+
+				td {
+					padding: 1rem;
+					border-top: 1px solid #e9ecef;
+					color: #555;
+				}
+			}
+		}
+
+		&.with-borders {
+			thead th,
+			tbody td {
+				border: 1px solid #e0e0e0;
+			}
+		}
+
+		&.alternating-rows {
+			tbody tr:nth-child(even) {
+				background: #f8f9fa;
+
+				&:hover {
+					background: #e9ecef;
+				}
+			}
+		}
+	}
+
+	.table-pagination {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 1rem 1.5rem;
+		border-top: 1px solid #e0e0e0;
+		flex-wrap: wrap;
+		gap: 1rem;
+
+		.pagination-info {
+			color: #666;
+			font-size: 0.9rem;
+		}
+
+		.pagination-controls {
+			display: flex;
+			gap: 0.5rem;
+			align-items: center;
+
+			button {
+				padding: 0.5rem 1rem;
+				background: #fff;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				cursor: pointer;
+				transition: all 0.2s;
+				font-size: 0.9rem;
+
+				&:hover:not(:disabled) {
+					background: #f8f9fa;
+					border-color: #2271b1;
+					color: #2271b1;
+				}
+
+				&:disabled {
+					opacity: 0.5;
+					cursor: not-allowed;
+				}
+			}
+
+			.page-number {
+				padding: 0.5rem 1rem;
+				min-width: 2.5rem;
+				text-align: center;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				cursor: pointer;
+				transition: all 0.2s;
+
+				&.active {
+					background: #2271b1;
+					color: white;
+					border-color: #2271b1;
+				}
+
+				&:hover:not(.active) {
+					background: #f8f9fa;
+				}
+			}
+		}
+	}
+
+	.loading-state,
+	.error-state,
+	.empty-state {
+		padding: 3rem;
+		text-align: center;
+		color: #666;
+	}
+
+	.loading-state {
+		.spinner {
+			width: 40px;
+			height: 40px;
+			border: 4px solid #f3f3f3;
+			border-top: 4px solid #2271b1;
+			border-radius: 50%;
+			animation: spin 1s linear infinite;
+			margin: 0 auto 1rem;
+		}
+
+		@keyframes spin {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
+		}
+	}
+
+	.error-state {
+		color: #d63638;
+
+		button {
+			margin-top: 1rem;
+			padding: 0.5rem 1rem;
+			background: #2271b1;
+			color: white;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+
+			&:hover {
+				background: #135e96;
+			}
+		}
+	}
+
+	// Responsive stack mode
+	&.responsive-mode-stack {
+		@media (max-width: 768px) {
+			.table-wrapper {
+				overflow-x: visible;
+			}
+
+			.data-table {
+				thead {
+					display: none;
+				}
+
+				tbody tr {
+					display: block;
+					margin-bottom: 1rem;
+					border: 1px solid #e0e0e0;
+					border-radius: 4px;
+
+					td {
+						display: block;
+						text-align: right;
+						padding: 0.75rem 1rem;
+						border: none;
+						border-bottom: 1px solid #f0f0f0;
+
+						&:before {
+							content: attr(data-label);
+							float: left;
+							font-weight: 600;
+							color: #333;
+						}
+
+						&:last-child {
+							border-bottom: none;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Mobile adjustments
+	@media (max-width: 768px) {
+		.table-pagination {
+			.pagination-info {
+				width: 100%;
+				text-align: center;
+			}
+
+			.pagination-controls {
+				width: 100%;
+				justify-content: center;
+			}
+		}
+	}
+}
+]]></content>
+  </file>
+  <file path="src/editor.scss">
+    <description>This file contains styles for the block in the editor.</description>
+	<content><![CDATA[
+/**
+ * The following styles get applied inside the editor only.
+ */
+
+.telex-data-table-editor {
+	border: 1px solid #e0e0e0;
+	border-radius: 4px;
+	background: white;
+
+	.components-placeholder {
+		min-height: 200px;
+		background: #f8f9fa;
+		border: 2px dashed #ddd;
+		border-radius: 4px;
+
+		.components-placeholder__label {
+			color: #333;
+		}
+
+		.components-placeholder__instructions {
+			color: #666;
+			margin-bottom: 1rem;
+		}
+
+		.components-base-control {
+			width: 100%;
+			max-width: 400px;
+		}
+	}
+
+	.loading-state,
+	.error-state {
+		padding: 3rem;
+		text-align: center;
+		color: #666;
+
+		.components-spinner {
+			margin: 0 auto 1rem;
+		}
+	}
+
+	.error-state {
+		color: #d63638;
+	}
+
+	.telex-data-table-preview {
+		padding: 1.5rem;
+
+		.preview-notice {
+			background: #f0f6fc;
+			border: 1px solid #c3dafe;
+			color: #0c5392;
+			padding: 0.75rem 1rem;
+			border-radius: 4px;
+			margin-bottom: 1rem;
+			font-size: 0.9rem;
+			text-align: center;
+		}
+
+		.table-search-preview {
+			margin-bottom: 1rem;
+
+			input {
+				width: 100%;
+				padding: 0.75rem 1rem;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				background: #f8f9fa;
+			}
+		}
+
+		.table-wrapper {
+			overflow-x: auto;
+			border: 1px solid #e0e0e0;
+			border-radius: 4px;
+			margin-bottom: 1rem;
+		}
+
+		.data-table {
+			width: 100%;
+			border-collapse: collapse;
+			font-size: 0.9rem;
+
+			thead {
+				background: #f8f9fa;
+
+				th {
+					padding: 0.75rem 1rem;
+					text-align: left;
+					font-weight: 600;
+					color: #333;
+					white-space: nowrap;
+					border-bottom: 2px solid #e0e0e0;
+
+					.sort-indicator {
+						margin-left: 0.5rem;
+						opacity: 0.4;
+					}
+				}
+
+				.filter-row th {
+					padding: 0.5rem 1rem;
+
+					select {
+						width: 100%;
+						padding: 0.5rem;
+						border: 1px solid #ddd;
+						border-radius: 4px;
+						font-size: 0.85rem;
+						background: #f8f9fa;
+					}
+				}
+			}
+
+			tbody {
+				tr {
+					&:hover {
+						background: #f8f9fa;
+					}
+
+					td {
+						padding: 0.75rem 1rem;
+						border-bottom: 1px solid #e9ecef;
+						color: #555;
+					}
+				}
+			}
+
+			&.with-borders {
+				thead th,
+				tbody td {
+					border: 1px solid #e0e0e0;
+				}
+			}
+
+			&.alternating-rows {
+				tbody tr:nth-child(even) {
+					background: #f8f9fa;
+				}
+			}
+		}
+
+		.table-pagination-preview {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 1rem;
+			background: #f8f9fa;
+			border: 1px solid #e0e0e0;
+			border-radius: 4px;
+			font-size: 0.9rem;
+
+			.pagination-controls {
+				display: flex;
+				gap: 0.5rem;
+
+				button, span {
+					padding: 0.5rem 1rem;
+					border: 1px solid #ddd;
+					border-radius: 4px;
+					background: white;
+				}
+
+				button {
+					opacity: 0.6;
+				}
+			}
+		}
+	}
+}
+
+// Inspector controls styling
+.block-editor-block-inspector {
+	.components-panel__body-title {
+		button {
+			font-weight: 600;
+		}
+	}
+
+	.components-base-control__help {
+		font-size: 12px;
+		color: #757575;
+		margin-top: 8px;
+	}
+}
+]]></content>
+  </file>
+  <file path="src/view.js">
+    <description>This file contains the view function for the block which is responsible for rendering interactive behaviors of the block on the front end.</description>
+	<content><![CDATA[
+/**
+ * Interactive Data Table Frontend JavaScript
+ * 
+ * Handles data fetching, filtering, sorting, pagination and all interactive features
+ */
+
+document.addEventListener('DOMContentLoaded', function() {
+	const tables = document.querySelectorAll('.wp-block-telex-block-telex-data-table');
+	
+	tables.forEach(initializeTable);
+});
+
+function initializeTable(tableBlock) {
+	const container = tableBlock.querySelector('.telex-data-table-container');
+	if (!container) return;
+	
+	const config = JSON.parse(container.dataset.config || '{}');
+	
+	const state = {
+		allData: [],
+		filteredData: [],
+		displayData: [],
+		currentPage: 1,
+		sortColumn: null,
+		sortDirection: 'asc',
+		searchTerm: '',
+		columnFilters: {},
+		availableColumns: config.selectedColumns || []
+	};
+	
+	// Initialize
+	fetchData(container, config, state);
+}
+
+async function fetchData(container, config, state) {
+	if (!config.dataSourceUrl) {
+		showError(container, 'No data source configured');
+		return;
+	}
+	
+	showLoading(container);
+	
+	try {
+		const response = await fetch(config.dataSourceUrl);
+		
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+		
+		const data = await response.json();
+		
+		if (!Array.isArray(data) || data.length === 0) {
+			throw new Error('Invalid data format. Expected an array of objects.');
+		}
+		
+		// Extract columns if not specified
+		if (state.availableColumns.length === 0) {
+			state.availableColumns = Object.keys(data[0]);
+		}
+		
+		state.allData = data;
+		state.filteredData = data;
+		
+		renderTable(container, config, state);
+		
+	} catch (error) {
+		showError(container, `Error loading data: ${error.message}`);
+	}
+}
+
+function showLoading(container) {
+	container.innerHTML = `
+		<div class="loading-state">
+			<div class="spinner"></div>
+			<p>Loading data...</p>
+		</div>
+	`;
+}
+
+function showError(container, message) {
+	container.innerHTML = `
+		<div class="error-state">
+			<p>${message}</p>
+			<button onclick="location.reload()">Retry</button>
+		</div>
+	`;
+}
+
+function renderTable(container, config, state) {
+	if (state.filteredData.length === 0) {
+		container.innerHTML = `
+			<div class="empty-state">
+				<p>No data available</p>
+			</div>
+		`;
+		return;
+	}
+	
+	// Apply pagination
+	const startIndex = (state.currentPage - 1) * config.rowsPerPage;
+	const endIndex = startIndex + config.rowsPerPage;
+	state.displayData = state.filteredData.slice(startIndex, endIndex);
+	
+	let html = '<div class="table-container-inner">';
+	
+	// Header with search
+	if (config.showSearch) {
+		html += `
+			<div class="table-header">
+				<div class="table-search">
+					<input 
+						type="text" 
+						placeholder="Search table..." 
+						value="${state.searchTerm}"
+						class="table-search-input"
+					/>
+				</div>
+			</div>
+		`;
+	}
+	
+	// Table wrapper
+	const wrapperClass = config.responsiveMode === 'scroll' ? 'responsive-scroll' : '';
+	html += `<div class="table-wrapper ${wrapperClass}">`;
+	
+	// Table
+	const tableClasses = [
+		'data-table',
+		config.showBorders ? 'with-borders' : '',
+		config.alternatingRows ? 'alternating-rows' : ''
+	].filter(Boolean).join(' ');
+	
+	html += `<table class="${tableClasses}">`;
+	
+	// Table header
+	html += '<thead>';
+	html += '<tr>';
+	
+	state.availableColumns.forEach(column => {
+		const sortClass = config.enableSorting ? 'sortable' : '';
+		const sortIndicator = state.sortColumn === column 
+			? `<span class="sort-indicator active">${state.sortDirection === 'asc' ? '↑' : '↓'}</span>`
+			: config.enableSorting ? '<span class="sort-indicator">⇅</span>' : '';
+		
+		html += `<th class="${sortClass}" data-column="${column}">${column}${sortIndicator}</th>`;
+	});
+	
+	html += '</tr>';
+	
+	// Filter row
+	if (config.showColumnFilters) {
+		html += '<tr class="filter-row">';
+		
+		state.availableColumns.forEach(column => {
+			const uniqueValues = [...new Set(state.allData.map(row => row[column]))].sort();
+			const currentFilter = state.columnFilters[column] || '';
+			
+			html += `<th><select class="column-filter" data-column="${column}">`;
+			html += `<option value="">All</option>`;
+			
+			uniqueValues.forEach(value => {
+				const selected = value === currentFilter ? 'selected' : '';
+				html += `<option value="${value}" ${selected}>${value}</option>`;
+			});
+			
+			html += '</select></th>';
+		});
+		
+		html += '</tr>';
+	}
+	
+	html += '</thead>';
+	
+	// Table body
+	html += '<tbody>';
+	
+	state.displayData.forEach(row => {
+		html += '<tr>';
+		
+		state.availableColumns.forEach(column => {
+			const label = config.responsiveMode === 'stack' ? `data-label="${column}"` : '';
+			html += `<td ${label}>${row[column] || '-'}</td>`;
+		});
+		
+		html += '</tr>';
+	});
+	
+	html += '</tbody>';
+	html += '</table>';
+	html += '</div>'; // table-wrapper
+	
+	// Pagination
+	if (config.showPagination) {
+		const totalPages = Math.ceil(state.filteredData.length / config.rowsPerPage);
+		const showingFrom = startIndex + 1;
+		const showingTo = Math.min(endIndex, state.filteredData.length);
+		const totalEntries = state.filteredData.length;
+		
+		html += `
+			<div class="table-pagination">
+				<div class="pagination-info">
+					Showing ${showingFrom} to ${showingTo} of ${totalEntries} entries
+				</div>
+				<div class="pagination-controls">
+					<button class="prev-page" ${state.currentPage === 1 ? 'disabled' : ''}>Previous</button>
+		`;
+		
+		// Page numbers
+		for (let i = 1; i <= Math.min(totalPages, 5); i++) {
+			const activeClass = i === state.currentPage ? 'active' : '';
+			html += `<span class="page-number ${activeClass}" data-page="${i}">${i}</span>`;
+		}
+		
+		if (totalPages > 5) {
+			html += '<span>...</span>';
+			html += `<span class="page-number" data-page="${totalPages}">${totalPages}</span>`;
+		}
+		
+		html += `
+					<button class="next-page" ${state.currentPage === totalPages ? 'disabled' : ''}>Next</button>
+				</div>
+			</div>
+		`;
+	}
+	
+	html += '</div>'; // table-container-inner
+	
+	container.innerHTML = html;
+	
+	// Attach event listeners
+	attachEventListeners(container, config, state);
+}
+
+function attachEventListeners(container, config, state) {
+	// Search
+	const searchInput = container.querySelector('.table-search-input');
+	if (searchInput) {
+		searchInput.addEventListener('input', (e) => {
+			state.searchTerm = e.target.value.toLowerCase();
+			state.currentPage = 1;
+			applyFilters(container, config, state);
+		});
+	}
+	
+	// Column filters
+	const columnFilters = container.querySelectorAll('.column-filter');
+	columnFilters.forEach(filter => {
+		filter.addEventListener('change', (e) => {
+			const column = e.target.dataset.column;
+			state.columnFilters[column] = e.target.value;
+			state.currentPage = 1;
+			applyFilters(container, config, state);
+		});
+	});
+	
+	// Sorting
+	if (config.enableSorting) {
+		const sortableHeaders = container.querySelectorAll('th.sortable');
+		sortableHeaders.forEach(header => {
+			header.addEventListener('click', () => {
+				const column = header.dataset.column;
+				
+				if (state.sortColumn === column) {
+					state.sortDirection = state.sortDirection === 'asc' ? 'desc' : 'asc';
+				} else {
+					state.sortColumn = column;
+					state.sortDirection = 'asc';
+				}
+				
+				applySorting(container, config, state);
+			});
+		});
+	}
+	
+	// Pagination
+	const prevButton = container.querySelector('.prev-page');
+	const nextButton = container.querySelector('.next-page');
+	const pageNumbers = container.querySelectorAll('.page-number');
+	
+	if (prevButton) {
+		prevButton.addEventListener('click', () => {
+			if (state.currentPage > 1) {
+				state.currentPage--;
+				renderTable(container, config, state);
+			}
+		});
+	}
+	
+	if (nextButton) {
+		nextButton.addEventListener('click', () => {
+			const totalPages = Math.ceil(state.filteredData.length / config.rowsPerPage);
+			if (state.currentPage < totalPages) {
+				state.currentPage++;
+				renderTable(container, config, state);
+			}
+		});
+	}
+	
+	pageNumbers.forEach(pageNum => {
+		pageNum.addEventListener('click', () => {
+			state.currentPage = parseInt(pageNum.dataset.page);
+			renderTable(container, config, state);
+		});
+	});
+}
+
+function applyFilters(container, config, state) {
+	state.filteredData = state.allData.filter(row => {
+		// Search filter
+		if (state.searchTerm) {
+			const searchMatch = state.availableColumns.some(column => {
+				const value = String(row[column] || '').toLowerCase();
+				return value.includes(state.searchTerm);
+			});
+			
+			if (!searchMatch) return false;
+		}
+		
+		// Column filters
+		for (const [column, filterValue] of Object.entries(state.columnFilters)) {
+			if (filterValue && row[column] !== filterValue) {
+				return false;
+			}
+		}
+		
+		return true;
+	});
+	
+	// Re-apply sorting if active
+	if (state.sortColumn) {
+		applySorting(container, config, state, false);
+	} else {
+		renderTable(container, config, state);
+	}
+}
+
+function applySorting(container, config, state, render = true) {
+	if (!state.sortColumn) return;
+	
+	state.filteredData.sort((a, b) => {
+		const aValue = a[state.sortColumn];
+		const bValue = b[state.sortColumn];
+		
+		// Handle different data types
+		const aNum = parseFloat(aValue);
+		const bNum = parseFloat(bValue);
+		
+		let comparison = 0;
+		
+		if (!isNaN(aNum) && !isNaN(bNum)) {
+			// Numeric comparison
+			comparison = aNum - bNum;
+		} else {
+			// String comparison
+			comparison = String(aValue).localeCompare(String(bValue));
+		}
+		
+		return state.sortDirection === 'asc' ? comparison : -comparison;
+	});
+	
+	if (render) {
+		renderTable(container, config, state);
+	}
+}
+]]></content>
+  </file>
+  <file path="src/render.php">
+    <description>This file contains the render callback function for the block, which is responsible for rendering the block content on the front end.</description>
+	<content><![CDATA[<?php
+/**
+ * @see https://github.com/WordPress/gutenberg/blob/trunk/docs/reference-guides/block-api/block-metadata.md#render
+ */
+
+$data_source_url = $attributes['dataSourceUrl'] ?? '';
+$rows_per_page = $attributes['rowsPerPage'] ?? 10;
+$show_search = $attributes['showSearch'] ?? true;
+$show_column_filters = $attributes['showColumnFilters'] ?? true;
+$show_pagination = $attributes['showPagination'] ?? true;
+$enable_sorting = $attributes['enableSorting'] ?? true;
+$show_borders = $attributes['showBorders'] ?? true;
+$alternating_rows = $attributes['alternatingRows'] ?? true;
+$responsive_mode = $attributes['responsiveMode'] ?? 'scroll';
+$selected_columns = $attributes['selectedColumns'] ?? array();
+
+$config = array(
+	'dataSourceUrl' => esc_url( $data_source_url ),
+	'rowsPerPage' => intval( $rows_per_page ),
+	'showSearch' => (bool) $show_search,
+	'showColumnFilters' => (bool) $show_column_filters,
+	'showPagination' => (bool) $show_pagination,
+	'enableSorting' => (bool) $enable_sorting,
+	'showBorders' => (bool) $show_borders,
+	'alternatingRows' => (bool) $alternating_rows,
+	'responsiveMode' => esc_attr( $responsive_mode ),
+	'selectedColumns' => $selected_columns,
+);
+
+$block_classes = array(
+	'telex-data-table-wrapper',
+	'responsive-mode-' . $responsive_mode,
+);
+
+$wrapper_attributes = get_block_wrapper_attributes( array(
+	'class' => implode( ' ', $block_classes ),
+) );
+?>
+
+<div <?php echo $wrapper_attributes; ?>>
+	<?php if ( empty( $data_source_url ) ) : ?>
+		<div class="telex-data-table-container">
+			<div class="empty-state">
+				<p><?php esc_html_e( 'Please configure a data source URL in the block settings.', 'telex-data-table' ); ?></p>
+			</div>
+		</div>
+	<?php else : ?>
+		<div class="telex-data-table-container" data-config='<?php echo esc_attr( wp_json_encode( $config ) ); ?>'>
+			<div class="loading-state">
+				<div class="spinner"></div>
+				<p><?php esc_html_e( 'Loading data...', 'telex-data-table' ); ?></p>
+			</div>
+		</div>
+	<?php endif; ?>
+</div>
+]]></content>
+  </file>
+  <file path="package.json">
+    <description>The AI assistant should only edit 'project_slug', 'description' and resolve 'isDynamicVariant' in this file and ALWAYS INCLUDE IT. This file includes the necessary scripts for building, formatting, and linting the block code. Dependencies are managed at the workspace level via pnpm.</description>
+  <content><![CDATA[
+{
+	"name": "telex-data-table",
+	"version": "0.1.0",
+	"description": "A powerful interactive data table block with search, filtering, sorting, and pagination capabilities for displaying data from REST APIs or JSON sources.",
+	"author": "WordPress Telex",
+	"license": "GPL-2.0-or-later",
+	"main": "build/index.js",
+	"scripts": {
+		"build": "wp-scripts build",
+		"format": "wp-scripts format",
+		"lint:css": "wp-scripts lint-style",
+		"lint:js": "wp-scripts lint-js",
+		"packages-update": "wp-scripts packages-update",
+		"plugin-zip": "wp-scripts plugin-zip",
+		"start": "wp-scripts start"
+	},
+	"devDependencies": {
+		"@wordpress/scripts": "^30.15.0"
+	}
+}
+]]></content>
+  </file>
+</artefact>

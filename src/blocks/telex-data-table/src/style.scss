@@ -1,0 +1,301 @@
+
+/**
+ * The following styles get applied both on the front of your site
+ * and in the editor.
+ */
+
+.wp-block-telex-block-telex-data-table {
+	margin: 2rem 0;
+
+	.telex-data-table-container {
+		background: #fff;
+		border-radius: 8px;
+		overflow: hidden;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	}
+
+	.table-header {
+		padding: 1.5rem;
+		border-bottom: 1px solid #e0e0e0;
+	}
+
+	.table-search {
+		margin-bottom: 1rem;
+
+		input {
+			width: 100%;
+			padding: 0.75rem 1rem;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			font-size: 1rem;
+			transition: border-color 0.2s;
+
+			&:focus {
+				outline: none;
+				border-color: #2271b1;
+			}
+		}
+	}
+
+	.table-wrapper {
+		overflow-x: auto;
+		
+		&.responsive-scroll {
+			-webkit-overflow-scrolling: touch;
+		}
+	}
+
+	.data-table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.95rem;
+
+		thead {
+			background: #f8f9fa;
+
+			th {
+				padding: 1rem;
+				text-align: left;
+				font-weight: 600;
+				color: #333;
+				white-space: nowrap;
+				user-select: none;
+
+				&.sortable {
+					cursor: pointer;
+					transition: background-color 0.2s;
+
+					&:hover {
+						background: #e9ecef;
+					}
+				}
+
+				.sort-indicator {
+					margin-left: 0.5rem;
+					opacity: 0.4;
+					font-size: 0.9em;
+
+					&.active {
+						opacity: 1;
+						color: #2271b1;
+					}
+				}
+			}
+
+			.filter-row {
+				th {
+					padding: 0.5rem 1rem;
+
+					select {
+						width: 100%;
+						padding: 0.5rem;
+						border: 1px solid #ddd;
+						border-radius: 4px;
+						font-size: 0.9rem;
+						background: white;
+						cursor: pointer;
+
+						&:focus {
+							outline: none;
+							border-color: #2271b1;
+						}
+					}
+				}
+			}
+		}
+
+		tbody {
+			tr {
+				transition: background-color 0.2s;
+
+				&:hover {
+					background: #f8f9fa;
+				}
+
+				td {
+					padding: 1rem;
+					border-top: 1px solid #e9ecef;
+					color: #555;
+				}
+			}
+		}
+
+		&.with-borders {
+			thead th,
+			tbody td {
+				border: 1px solid #e0e0e0;
+			}
+		}
+
+		&.alternating-rows {
+			tbody tr:nth-child(even) {
+				background: #f8f9fa;
+
+				&:hover {
+					background: #e9ecef;
+				}
+			}
+		}
+	}
+
+	.table-pagination {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 1rem 1.5rem;
+		border-top: 1px solid #e0e0e0;
+		flex-wrap: wrap;
+		gap: 1rem;
+
+		.pagination-info {
+			color: #666;
+			font-size: 0.9rem;
+		}
+
+		.pagination-controls {
+			display: flex;
+			gap: 0.5rem;
+			align-items: center;
+
+			button {
+				padding: 0.5rem 1rem;
+				background: #fff;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				cursor: pointer;
+				transition: all 0.2s;
+				font-size: 0.9rem;
+
+				&:hover:not(:disabled) {
+					background: #f8f9fa;
+					border-color: #2271b1;
+					color: #2271b1;
+				}
+
+				&:disabled {
+					opacity: 0.5;
+					cursor: not-allowed;
+				}
+			}
+
+			.page-number {
+				padding: 0.5rem 1rem;
+				min-width: 2.5rem;
+				text-align: center;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				cursor: pointer;
+				transition: all 0.2s;
+
+				&.active {
+					background: #2271b1;
+					color: white;
+					border-color: #2271b1;
+				}
+
+				&:hover:not(.active) {
+					background: #f8f9fa;
+				}
+			}
+		}
+	}
+
+	.loading-state,
+	.error-state,
+	.empty-state {
+		padding: 3rem;
+		text-align: center;
+		color: #666;
+	}
+
+	.loading-state {
+		.spinner {
+			width: 40px;
+			height: 40px;
+			border: 4px solid #f3f3f3;
+			border-top: 4px solid #2271b1;
+			border-radius: 50%;
+			animation: spin 1s linear infinite;
+			margin: 0 auto 1rem;
+		}
+
+		@keyframes spin {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
+		}
+	}
+
+	.error-state {
+		color: #d63638;
+
+		button {
+			margin-top: 1rem;
+			padding: 0.5rem 1rem;
+			background: #2271b1;
+			color: white;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+
+			&:hover {
+				background: #135e96;
+			}
+		}
+	}
+
+	// Responsive stack mode
+	&.responsive-mode-stack {
+		@media (max-width: 768px) {
+			.table-wrapper {
+				overflow-x: visible;
+			}
+
+			.data-table {
+				thead {
+					display: none;
+				}
+
+				tbody tr {
+					display: block;
+					margin-bottom: 1rem;
+					border: 1px solid #e0e0e0;
+					border-radius: 4px;
+
+					td {
+						display: block;
+						text-align: right;
+						padding: 0.75rem 1rem;
+						border: none;
+						border-bottom: 1px solid #f0f0f0;
+
+						&:before {
+							content: attr(data-label);
+							float: left;
+							font-weight: 600;
+							color: #333;
+						}
+
+						&:last-child {
+							border-bottom: none;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Mobile adjustments
+	@media (max-width: 768px) {
+		.table-pagination {
+			.pagination-info {
+				width: 100%;
+				text-align: center;
+			}
+
+			.pagination-controls {
+				width: 100%;
+				justify-content: center;
+			}
+		}
+	}
+}

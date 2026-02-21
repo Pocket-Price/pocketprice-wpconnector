@@ -1,0 +1,34 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pocketprice/service-collection",
+	"version": "1.0.0",
+	"title": "Pocket Price: Все услуги",
+	"category": "widgets",
+	"icon": "list-view",
+	"description": "Полный прайс-лист с группировкой по подкатегориям.",
+	"keywords": [ "price", "services", "pocket", "collection", "all", "прайс" ],
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	},
+	"textdomain": "pocketprice-connector",
+	"attributes": {
+		"groupByCategory": {
+			"type": "boolean",
+			"default": true
+		},
+		"showDescription": {
+			"type": "boolean",
+			"default": false
+		},
+		"showNotes": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

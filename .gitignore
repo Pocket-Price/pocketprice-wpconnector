@@ -1,5 +1,7 @@
-pocketprice-connector/.DS_Store
+node_modules/
+build/
 .DS_Store
-pocketprice-connector.zip
-pocketprice-connector/.claude/settings.local.json
-pocketprice-connector/.vscode/mcp.json
+.claude/settings.local.json
+.vscode/mcp.json
+/pocketprice-connector/.claude
+src/blocks/telex-data-table.zip

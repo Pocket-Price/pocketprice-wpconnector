@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pocketprice/service-category",
+	"version": "1.0.0",
+	"title": "Pocket Price: Подкатегория",
+	"category": "widgets",
+	"icon": "category",
+	"description": "Таблица услуг из выбранной подкатегории.",
+	"keywords": [ "price", "category", "pocket", "table", "эвакуатор" ],
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	},
+	"textdomain": "pocketprice-connector",
+	"attributes": {
+		"subcategoryId": {
+			"type": "string",
+			"default": ""
+		},
+		"showDescription": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

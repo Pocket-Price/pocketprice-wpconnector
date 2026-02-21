@@ -1,0 +1,32 @@
+/* Front-end styles for Service Collection block */
+.pocketprice-collection {
+	margin: 1.5rem 0;
+}
+
+.pocketprice-collection .pocketprice-services-table {
+	margin-bottom: 2rem;
+}
+
+.pocketprice-collection .pocketprice-services-table:last-child {
+	margin-bottom: 0;
+}
+
+/* Meta notes */
+.pocketprice-meta-notes {
+	margin-bottom: 1.5rem;
+	padding: 1rem 1.25rem;
+	background: #fff8e1;
+	border-left: 4px solid #ffc107;
+	border-radius: 4px;
+}
+
+.pocketprice-meta-notes__item {
+	margin: 0 0 0.5rem;
+	font-size: 0.9rem;
+	color: #5d4037;
+	line-height: 1.5;
+}
+
+.pocketprice-meta-notes__item:last-child {
+	margin-bottom: 0;
+}

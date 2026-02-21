@@ -1,0 +1,14 @@
+/* Pocket Price admin settings styles */
+#pocketprice-status {
+	display: inline-block;
+	margin-left: 10px;
+	font-style: italic;
+}
+
+#pocketprice-status.success {
+	color: #00a32a;
+}
+
+#pocketprice-status.error {
+	color: #d63638;
+}

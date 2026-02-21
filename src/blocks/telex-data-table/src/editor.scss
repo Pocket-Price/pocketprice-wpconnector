@@ -1,0 +1,186 @@
+
+/**
+ * The following styles get applied inside the editor only.
+ */
+
+.telex-data-table-editor {
+	border: 1px solid #e0e0e0;
+	border-radius: 4px;
+	background: white;
+
+	.components-placeholder {
+		min-height: 200px;
+		background: #f8f9fa;
+		border: 2px dashed #ddd;
+		border-radius: 4px;
+
+		.components-placeholder__label {
+			color: #333;
+		}
+
+		.components-placeholder__instructions {
+			color: #666;
+			margin-bottom: 1rem;
+		}
+
+		.components-base-control {
+			width: 100%;
+			max-width: 400px;
+		}
+	}
+
+	.loading-state,
+	.error-state {
+		padding: 3rem;
+		text-align: center;
+		color: #666;
+
+		.components-spinner {
+			margin: 0 auto 1rem;
+		}
+	}
+
+	.error-state {
+		color: #d63638;
+	}
+
+	.telex-data-table-preview {
+		padding: 1.5rem;
+
+		.preview-notice {
+			background: #f0f6fc;
+			border: 1px solid #c3dafe;
+			color: #0c5392;
+			padding: 0.75rem 1rem;
+			border-radius: 4px;
+			margin-bottom: 1rem;
+			font-size: 0.9rem;
+			text-align: center;
+		}
+
+		.table-search-preview {
+			margin-bottom: 1rem;
+
+			input {
+				width: 100%;
+				padding: 0.75rem 1rem;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				background: #f8f9fa;
+			}
+		}
+
+		.table-wrapper {
+			overflow-x: auto;
+			border: 1px solid #e0e0e0;
+			border-radius: 4px;
+			margin-bottom: 1rem;
+		}
+
+		.data-table {
+			width: 100%;
+			border-collapse: collapse;
+			font-size: 0.9rem;
+
+			thead {
+				background: #f8f9fa;
+
+				th {
+					padding: 0.75rem 1rem;
+					text-align: left;
+					font-weight: 600;
+					color: #333;
+					white-space: nowrap;
+					border-bottom: 2px solid #e0e0e0;
+
+					.sort-indicator {
+						margin-left: 0.5rem;
+						opacity: 0.4;
+					}
+				}
+
+				.filter-row th {
+					padding: 0.5rem 1rem;
+
+					select {
+						width: 100%;
+						padding: 0.5rem;
+						border: 1px solid #ddd;
+						border-radius: 4px;
+						font-size: 0.85rem;
+						background: #f8f9fa;
+					}
+				}
+			}
+
+			tbody {
+				tr {
+					&:hover {
+						background: #f8f9fa;
+					}
+
+					td {
+						padding: 0.75rem 1rem;
+						border-bottom: 1px solid #e9ecef;
+						color: #555;
+					}
+				}
+			}
+
+			&.with-borders {
+				thead th,
+				tbody td {
+					border: 1px solid #e0e0e0;
+				}
+			}
+
+			&.alternating-rows {
+				tbody tr:nth-child(even) {
+					background: #f8f9fa;
+				}
+			}
+		}
+
+		.table-pagination-preview {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 1rem;
+			background: #f8f9fa;
+			border: 1px solid #e0e0e0;
+			border-radius: 4px;
+			font-size: 0.9rem;
+
+			.pagination-controls {
+				display: flex;
+				gap: 0.5rem;
+
+				button, span {
+					padding: 0.5rem 1rem;
+					border: 1px solid #ddd;
+					border-radius: 4px;
+					background: white;
+				}
+
+				button {
+					opacity: 0.6;
+				}
+			}
+		}
+	}
+}
+
+// Inspector controls styling
+.block-editor-block-inspector {
+	.components-panel__body-title {
+		button {
+			font-weight: 600;
+		}
+	}
+
+	.components-base-control__help {
+		font-size: 12px;
+		color: #757575;
+		margin-top: 8px;
+	}
+}

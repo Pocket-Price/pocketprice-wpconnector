@@ -1,0 +1,26 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pocketprice/service-single",
+	"version": "1.0.0",
+	"title": "Pocket Price: Услуга",
+	"category": "widgets",
+	"icon": "tag",
+	"description": "Карточка одной услуги из прайс-листа.",
+	"keywords": [ "price", "service", "pocket", "услуга", "эвакуатор" ],
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	},
+	"textdomain": "pocketprice-connector",
+	"attributes": {
+		"serviceId": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}
